@@ -1,0 +1,124 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Book {
+    String title;
+    String author;
+    boolean isAvailable;
+
+    Book(String title, String author) {
+        this.title = title;
+        this.author = author;
+        this.isAvailable = true;
+    }
+
+    public String toString() {
+        return title + " by " + author + " [" + (isAvailable ? "Available" : "Borrowed") + "]";
+    }
+}
+
+public class LibraryManagementSystem {
+    static ArrayList<Book> books = new ArrayList<>();
+    static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        boolean running = true;
+
+        while (running) {
+            System.out.println("\n====== Library Menu ======");
+            System.out.println("1. Add Book");
+            System.out.println("2. Display All Books");
+            System.out.println("3. Borrow Book");
+            System.out.println("4. Return Book");
+            System.out.println("5. Exit");
+            System.out.print("Choose an option (1-5): ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();  // Consume newline left-over
+
+            switch (choice) {
+                case 1:
+                    addBook();
+                    break;
+                case 2:
+                    displayBooks();
+                    break;
+                case 3:
+                    borrowBook();
+                    break;
+                case 4:
+                    returnBook();
+                    break;
+                case 5:
+                    running = false;
+                    System.out.println("Exiting Library System. Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid option. Try again.");
+            }
+        }
+    }
+
+    static void addBook() {
+        System.out.print("Enter Book Title: ");
+        String title = scanner.nextLine();
+
+        System.out.print("Enter Author Name: ");
+        String author = scanner.nextLine();
+
+        books.add(new Book(title, author));
+        System.out.println("Book added successfully!");
+    }
+
+    static void displayBooks() {
+        if (books.isEmpty()) {
+            System.out.println("No books available.");
+            return;
+        }
+
+        System.out.println("\n--- Book List ---");
+        for (int i = 0; i < books.size(); i++) {
+            System.out.println((i + 1) + ". " + books.get(i));
+        }
+    }
+
+    static void borrowBook() {
+        displayBooks();
+        if (books.isEmpty()) return;
+
+        System.out.print("Enter book number to borrow: ");
+        int index = scanner.nextInt() - 1;
+
+        if (index >= 0 && index < books.size()) {
+            Book book = books.get(index);
+            if (book.isAvailable) {
+                book.isAvailable = false;
+                System.out.println("You borrowed \"" + book.title + "\"");
+            } else {
+                System.out.println("Sorry, that book is already borrowed.");
+            }
+        } else {
+            System.out.println("Invalid book number.");
+        }
+    }
+
+    static void returnBook() {
+        displayBooks();
+        if (books.isEmpty()) return;
+
+        System.out.print("Enter book number to return: ");
+        int index = scanner.nextInt() - 1;
+
+        if (index >= 0 && index < books.size()) {
+            Book book = books.get(index);
+            if (!book.isAvailable) {
+                book.isAvailable = true;
+                System.out.println("You returned \"" + book.title + "\"");
+            } else {
+                System.out.println("This book wasn't borrowed.");
+            }
+        } else {
+            System.out.println("Invalid book number.");
+        }
+    }
+}
